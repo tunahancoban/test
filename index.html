@@ -74,6 +74,33 @@
       .row{grid-template-columns:1fr}
       .menu{display:none}
     }
+
+    /* === Devlog Modal === */
+    .modal-backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.54);
+      display:none; align-items:center; justify-content:center; z-index:80;
+    }
+    .modal{
+      width:min(800px, 100% - 32px); border-radius:16px; overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow);
+    }
+    .modal header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .modal header h3{ margin:0; font-size:18px }
+    .modal .content{ padding:14px 16px; max-height:70vh; overflow:auto }
+    .devlog-entry{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,.08)}
+    .devlog-entry:last-child{ border-bottom:none }
+    .devlog-entry h4{ margin:0 0 4px; font-size:16px }
+    .devlog-entry time{ color:var(--muted); font-size:12px }
+    .devlog-entry p{ margin:8px 0 0; color:var(--muted); line-height:1.6 }
+    .modal .close{ border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.05);
+      border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:600 }
+    .modal .links{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap }
+    .modal .links a{ border:1px solid rgba(255,255,255,.15); padding:6px 10px; border-radius:999px; font-size:12px }
+    .modal-empty{ color:var(--muted); font-style:italic }
   </style>
 </head>
 <body>
@@ -147,30 +174,33 @@
             <div class="tagrow"><span class="tag">Game</span><span class="tag">Unity</span><span class="tag">2D</span></div>
             <div class="actions">
               <a class="ghost" href="https://tunahancoban.itch.io/abandoned-gods" target="_blank" rel="noopener">itch.io</a>
+              <button class="ghost devlog-btn" data-devlog="abandoned-gods">Devlog</button>
             </div>
           </div>
         </article>
 
         <article class="project" data-tags="game">
-          <div class="thumb">Gülben </div>
+          <div class="thumb">Gülben</div>
           <div class="body">
             <h3>Gülben – 2D Puzzle</h3>
             <p>YTÜ Kramer Jam’de geliştirdiğimiz 2D bulmaca oyunu.</p>
             <div class="tagrow"><span class="tag">Game Jam</span><span class="tag">Unity</span><span class="tag">2D</span></div>
             <div class="actions">
               <a class="ghost" href="https://tunahancoban.itch.io/gulben" target="_blank" rel="noopener">itch.io</a>
+              <button class="ghost devlog-btn" data-devlog="gulben">Devlog</button>
             </div>
           </div>
         </article>
 
         <article class="project" data-tags="game">
-          <div class="thumb">Kutkan Destanı </div>
+          <div class="thumb">Kutkan Destanı</div>
           <div class="body">
             <h3>Kutkan Destanı – Bullet Heaven</h3>
             <p>Turkic Game Jam’de yaptığımız 2D bullet heaven oyunu.</p>
             <div class="tagrow"><span class="tag">Game Jam</span><span class="tag">Unity</span><span class="tag">2D</span></div>
             <div class="actions">
               <a class="ghost" href="https://tunahancoban.itch.io/kutkan-destani" target="_blank" rel="noopener">itch.io</a>
+              <button class="ghost devlog-btn" data-devlog="kutkan-destani">Devlog</button>
             </div>
           </div>
         </article>
@@ -184,6 +214,7 @@
             <div class="tagrow"><span class="tag">Unity</span><span class="tag">3D</span><span class="tag">Horror</span></div>
             <div class="actions">
               <a class="ghost" href="https://tunahancoban.itch.io" target="_blank" rel="noopener">Takip Et</a>
+              <button class="ghost devlog-btn" data-devlog="fps-horror">Devlog</button>
             </div>
           </div>
         </article>
@@ -196,6 +227,7 @@
             <div class="tagrow"><span class="tag">Unity</span><span class="tag">3D</span><span class="tag">Adventure</span></div>
             <div class="actions">
               <a class="ghost" href="https://tunahancoban.itch.io" target="_blank" rel="noopener">Takip Et</a>
+              <button class="ghost devlog-btn" data-devlog="tps-adventure">Devlog</button>
             </div>
           </div>
         </article>
@@ -233,6 +265,17 @@
       © <span id="y"></span> • Tunahan Çoban
     </footer>
   </main>
+
+  <!-- Devlog Modal -->
+  <div class="modal-backdrop" id="devlogBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="devlogTitle">
+      <header>
+        <h3 id="devlogTitle">Devlog</h3>
+        <button class="close" id="devlogClose">Kapat</button>
+      </header>
+      <div class="content" id="devlogContent"></div>
+    </div>
+  </div>
 
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
@@ -275,7 +318,7 @@
     (function(){
       const form = document.getElementById('contactForm');
       const msg = document.getElementById('formMsg');
-      const TO = 'tunahancbnn@gmail.com'; // TODO: burayı kendi e-postanla değiştir
+      const TO = 'tunahancbnn@gmail.com';
       form.addEventListener('submit', function(e){
         e.preventDefault();
         const name = form.name.value.trim();
@@ -290,7 +333,95 @@
         msg.textContent = 'Mail uygulaması açıldı; göndermeden önce içeriği kontrol edin.'; msg.className = 'msg ok'; form.reset();
       });
     })();
+
+    /* ====== DEVLOG DATA ====== */
+    const DEVLOGS = {
+      "abandoned-gods": [
+        {
+          date: "2025-08-20",
+          title: "Yeni Boss prototipi ve dash hissi",
+          text: "Boss saldırı patternleri için state machine sadeleştirildi. Dash sonrası coyote time eklendi; akış daha akıcı."
+        },
+        {
+          date: "2025-08-10",
+          title: "Tilemap & Checkpoint",
+          text: "Tilemap çarpışmaları optimize edildi; checkpoint ve spawn mantığı sorunsuz."
+        }
+      ],
+      "gulben": [
+        {
+          date: "2025-08-15",
+          title: "Bulmaca döngüsü revizyonu",
+          text: "Tutorial seviyesinde görsel ipucu eklendi; oyuncu takılmadan mekaniği kavrıyor."
+        }
+      ],
+      "kutkan-destani": [
+        {
+          date: "2025-08-12",
+          title: "Düşman dalgaları ve seviye büyümesi",
+          text: "Dalga süreleri kısaldı; XP eğrisi ayarlandı."
+        }
+      ],
+      "fps-horror": [
+        {
+          date: "2025-08-22",
+          title: "AI görme konisi + ses algısı",
+          text: "FOV + işitsel tetikleyiciler tamam. Işık/karanlık bölgelerine göre detection eşiği değişiyor."
+        }
+      ],
+      "tps-adventure": [
+        {
+          date: "2025-08-21",
+          title: "Kamera shoulder switch + lock-on",
+          text: "Omuz değişimi ve lock-on hedefleme eklendi. TPS hissi daha doğal."
+        }
+      ]
+    };
+
+    /* ====== DEVLOG UI ====== */
+    (function(){
+      const backdrop = document.getElementById('devlogBackdrop');
+      const content = document.getElementById('devlogContent');
+      const titleEl = document.getElementById('devlogTitle');
+      const closeBtn = document.getElementById('devlogClose');
+
+      function openDevlog(slug, displayName){
+        const entries = DEVLOGS[slug] || [];
+        titleEl.textContent = `Devlog • ${displayName || slug}`;
+        content.innerHTML = entries.length ? entries.map(it => `
+          <article class="devlog-entry">
+            <h4>${escapeHtml(it.title || "Güncelleme")}</h4>
+            <time>${escapeHtml(it.date || "")}</time>
+            <p>${escapeHtml(it.text || "")}</p>
+          </article>
+        `).join('') : `<p class="modal-empty">Henüz devlog girişi yok.</p>`;
+        backdrop.style.display = 'flex';
+        backdrop.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDevlog(){
+        backdrop.style.display = 'none';
+        backdrop.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.devlog-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const slug = btn.getAttribute('data-devlog');
+          const card = btn.closest('.project');
+          const name = card?.querySelector('h3')?.textContent?.trim() || slug;
+          openDevlog(slug, name);
+        });
+      });
+
+      closeBtn.addEventListener('click', closeDevlog);
+      backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeDevlog(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeDevlog(); });
+
+      // Basit XSS koruması
+      function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    })();
   </script>
 </body>
 </html>
-

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portföy • Tunahan Çoban</title>
+  <meta name="description" content="Tunahan Çoban – oyun geliştirme ve yapay zekâ projeleri" />
+  <style>
+    :root{
+      --bg:#0b1020; --surface:#111831; --muted:#9aa3b2; --text:#EAF0FF;
+      --accent:#6CA3FF; --accent-2:#22d3ee; --ok:#22c55e; --danger:#ef4444;
+      --radius:18px; --shadow:0 15px 35px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03); --max:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;scroll-behavior:smooth}
+    body{font-family:system-ui,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;background:radial-gradient(1200px 700px at 10% -10%,rgba(108,163,255,.15),transparent 60%),radial-gradient(800px 600px at 90% 0,rgba(34,211,238,.15),transparent 60%),var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    .container{width:min(var(--max), 100% - 32px);margin-inline:auto}
+
+    header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg, rgba(11,16,32,.9), rgba(11,16,32,.6));backdrop-filter: blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center}
+    .brand .logo{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:var(--shadow);font-weight:700}
+    .brand span{font-weight:700;letter-spacing:.3px}
+    .menu{display:flex;gap:12px;align-items:center}
+    .menu a{padding:10px 14px;border-radius:10px;color:var(--muted)}
+    .menu a:hover{background:rgba(255,255,255,.06);color:var(--text)}
+
+    .social{display:flex;gap:10px}
+    .btn{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,.1);padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.03);box-shadow:var(--shadow);font-weight:600}
+    .btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+    .btn svg{width:18px;height:18px}
+
+    .hero{padding:56px 0 34px}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:28px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);border-radius:var(--radius);padding:22px}
+    h1{font-size:clamp(24px,3.4vw,40px);margin:0 0 10px}
+    p.lead{color:var(--muted);font-size:clamp(14px,1.5vw,16px);line-height:1.65}
+
+    .filters{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 0}
+    .chip{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);padding:8px 12px;border-radius:999px;font-size:14px;cursor:pointer;user-select:none}
+    .chip.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));border-color:transparent;color:#031225}
+    .chip.outline{background:transparent}
+
+    section{scroll-margin-top:82px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:8px 0 14px}
+    .section-title h2{margin:0;font-size:24px}
+    .projects{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .project{grid-column:span 4;background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+    .project:hover{transform:translateY(-4px)}
+    .thumb{aspect-ratio:16/9;background:radial-gradient(600px 180px at -10% -30%, rgba(108,163,255,.25), transparent),radial-gradient(300px 120px at 110% 0, rgba(34,211,238,.25), transparent);display:grid;place-items:center;font-weight:800;letter-spacing:.6px;text-align:center;padding:8px}
+    .project .body{padding:14px 14px 10px;display:flex;flex-direction:column;gap:8px}
+    .project h3{margin:0;font-size:18px}
+    .project p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+    .tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .tag{font-size:12px;border:1px solid rgba(255,255,255,.15);padding:4px 8px;border-radius:999px;color:var(--muted)}
+    .project .actions{display:flex;gap:10px;margin:10px 0 4px}
+    .ghost{border:1px solid rgba(255,255,255,.15);padding:8px 10px;border-radius:10px;font-size:14px}
+
+    .form{display:grid;gap:10px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .input, textarea{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;color:var(--text);font:inherit}
+    textarea{min-height:130px;resize:vertical}
+    .submit{justify-self:start;background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;color:#031225;padding:12px 16px;border-radius:12px;font-weight:700;cursor:pointer}
+    .msg{margin-top:10px;font-size:14px}
+    .ok{color:var(--ok)} .fail{color:var(--danger)}
+
+    footer{margin-top:40px;padding:22px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,.08)}
+
+    @media (max-width: 920px){ .hero-grid{grid-template-columns:1fr} .project{grid-column:span 6} }
+    @media (max-width: 640px){
+      .projects{grid-template-columns:repeat(6,1fr)}
+      .project{grid-column:span 6}
+      .row{grid-template-columns:1fr}
+      .menu{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo">TC</div>
+        <span>Tunahan Çoban</span>
+      </div>
+      <nav class="menu" aria-label="Ana menü">
+        <a href="#about">Hakkımda</a>
+        <a href="#projects">Projeler</a>
+        <a href="#contact">İletişim</a>
+      </nav>
+      <div class="social">
+        <a class="btn" href="https://www.linkedin.com/in/tunahan-%C3%A7oban-060295313" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://tunahancoban.itch.io" target="_blank" rel="noopener">itch.io</a>
+        <a class="btn" href="https://instagram.com/tunacbnn" target="_blank" rel="noopener">Instagram</a>
+        <a class="btn" href="https://youtube.com/@tunahancoban_" target="_blank" rel="noopener">YouTube</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero / About -->
+    <section id="about" class="hero">
+      <div class="hero-grid">
+        <div class="card">
+          <h1>Merhaba, ben <span style="color:var(--accent)">Tunahan Çoban</span> 👋</h1>
+          <p class="lead">
+            22 yaşında, Ankara’da yaşayan AYBÜ Bilgisayar Mühendisliği öğrencisiyim.
+            Oyun geliştirme (Unity) ve yapay zekâ ile ilgileniyorum. Bu sayfada bazı oyunlarımı ve üzerinde
+            çalıştığım projeleri bulabilirsiniz.
+          </p>
+          <div class="filters" aria-label="Öne çıkan alanlar">
+            <div class="chip active" data-preset="game">Game Dev</div>
+            <div class="chip active" data-preset="ai">AI / ML</div>
+            <div class="chip active" data-preset="web">Web</div>
+          </div>
+        </div>
+        <div class="card">
+          <h2 style="margin:0 0 6px">Hızlı Bilgiler</h2>
+          <ul style="margin:0;padding-left:18px;color:var(--muted);line-height:1.75">
+            <li>🎮 Unity 2D/3D • C# • Game Jams</li>
+            <li>🧠 AI/ML’e ilgi • Python</li>
+            <li>🌐 HTML/CSS/JS • küçük web araçları</li>
+            <li>📍 Ankara / Türkiye</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+      <div class="section-title">
+        <h2>Projeler</h2>
+        <div class="filters" role="group" aria-label="Projeleri etiketlere göre filtrele">
+          <div class="chip outline" data-filter="all">Hepsi</div>
+          <div class="chip" data-filter="game">Game</div>
+          <div class="chip" data-filter="ai">AI/ML</div>
+          <div class="chip" data-filter="web">Web</div>
+          <div class="chip" data-clear>Temizle</div>
+        </div>
+      </div>
+
+      <div class="projects" id="projectGrid">
+        <!-- Itch.io oyunları -->
+        <article class="project" data-tags="game">
+          <div class="thumb">Abandoned Gods</div>
+          <div class="body">
+            <h3>Abandoned Gods (2D Action Platformer)</h3>
+            <p>2D aksiyon-platform oyunu. Itch.io sayfasından erişilebilir.</p>
+            <div class="tagrow"><span class="tag">Game</span><span class="tag">Unity</span><span class="tag">2D</span></div>
+            <div class="actions">
+              <a class="ghost" href="https://tunahancoban.itch.io/abandoned-gods" target="_blank" rel="noopener">itch.io</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" data-tags="game">
+          <div class="thumb">Gülben (Jam)</div>
+          <div class="body">
+            <h3>Gülben – 2D Puzzle</h3>
+            <p>YTÜ Kramer Jam’de geliştirdiğimiz 2D bulmaca oyunu.</p>
+            <div class="tagrow"><span class="tag">Game Jam</span><span class="tag">Unity</span><span class="tag">2D</span></div>
+            <div class="actions">
+              <a class="ghost" href="https://tunahancoban.itch.io/gulben" target="_blank" rel="noopener">itch.io</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" data-tags="game">
+          <div class="thumb">Kutkan Destanı (Jam)</div>
+          <div class="body">
+            <h3>Kutkan Destanı – Bullet Heaven</h3>
+            <p>Türkic Game Jam’de yaptığımız 2D bullet heaven oyunu.</p>
+            <div class="tagrow"><span class="tag">Game Jam</span><span class="tag">Unity</span><span class="tag">2D</span></div>
+            <div class="actions">
+              <a class="ghost" href="https://tunahancoban.itch.io/kutkan-destani" target="_blank" rel="noopener">itch.io</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Devam eden projeler -->
+        <article class="project" data-tags="game">
+          <div class="thumb">3D FPS Korku</div>
+          <div class="body">
+            <h3>3D FPS Korku Oyunu (Devam Ediyor)</h3>
+            <p>Atmosfer ve yapay zekâ odaklı, tek kişilik FPS korku deneyimi. Geliştirme süreci devam ediyor.</p>
+            <div class="tagrow"><span class="tag">Unity</span><span class="tag">3D</span><span class="tag">Horror</span></div>
+            <div class="actions">
+              <a class="ghost" href="https://tunahancoban.itch.io" target="_blank" rel="noopener">Takip Et</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project" data-tags="game">
+          <div class="thumb">3D TPS Macera</div>
+          <div class="body">
+            <h3>3D TPS Macera Oyunu (Devam Ediyor)</h3>
+            <p>Keşif ve dövüş mekaniklerine sahip üçüncü şahıs macera oyunu. Devlog yakında.</p>
+            <div class="tagrow"><span class="tag">Unity</span><span class="tag">3D</span><span class="tag">Adventure</span></div>
+            <div class="actions">
+              <a class="ghost" href="https://tunahancoban.itch.io" target="_blank" rel="noopener">Takip Et</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" style="margin-top:28px">
+      <div class="section-title">
+        <h2>İletişim</h2>
+        <div class="filters">
+          <a class="btn" href="mailto:you@example.com">E-posta</a>
+          <a class="btn" href="https://www.linkedin.com/in/tunahan-%C3%A7oban-060295313" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn" href="https://tunahancoban.itch.io" target="_blank" rel="noopener">itch.io</a>
+          <a class="btn" href="https://instagram.com/tunacbnn" target="_blank" rel="noopener">Instagram</a>
+          <a class="btn" href="https://youtube.com/@tunahancoban_" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <!-- Mailto tabanlı basit iletişim formu (sunucu gerekmez) -->
+        <form id="contactForm" class="form" action="#">
+          <div class="row">
+            <input class="input" type="text" name="name" placeholder="Adınız" required />
+            <input class="input" type="email" name="email" placeholder="E-posta" required />
+          </div>
+          <textarea name="message" placeholder="Mesajınız" required></textarea>
+          <button class="submit" type="submit">Gönder</button>
+          <div id="formMsg" class="msg" style="color:var(--muted)">Not: Bu form, cihazınızdaki mail uygulamasını açar. Sunucu gerekmez.</div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="container">
+      © <span id="y"></span> • Tunahan Çoban
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    (function(){
+      const grid = document.getElementById('projectGrid');
+      const cards = Array.from(grid.querySelectorAll('.project'));
+      const filterChips = Array.from(document.querySelectorAll('[data-filter]'));
+      const clearChip = document.querySelector('[data-clear]');
+      const selected = new Set();
+      function apply(){
+        if (selected.size === 0 || selected.has('all')) { cards.forEach(c => c.style.display = 'flex'); return; }
+        cards.forEach(card => {
+          const tags = (card.getAttribute('data-tags')||'').split(',').map(t=>t.trim());
+          const ok = Array.from(selected).every(tag => tags.includes(tag));
+          card.style.display = ok ? 'flex' : 'none';
+        });
+      }
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          const tag = chip.getAttribute('data-filter');
+          if (tag === 'all') { selected.clear(); selected.add('all'); filterChips.forEach(c=>c.classList.remove('active')); chip.classList.add('active'); apply(); return; }
+          if (selected.has('all')) selected.delete('all');
+          chip.classList.toggle('active');
+          if (chip.classList.contains('active')) selected.add(tag); else selected.delete(tag);
+          apply();
+        });
+      });
+      clearChip?.addEventListener('click', () => { selected.clear(); filterChips.forEach(c=>c.classList.remove('active')); apply(); });
+
+      document.querySelectorAll('[data-preset]')?.forEach(el=>{
+        el.addEventListener('click', ()=>{
+          const t = el.getAttribute('data-preset');
+          const btn = document.querySelector(`.filters [data-filter="${t}"]`);
+          if (btn){ btn.click(); }
+        });
+      });
+    })();
+
+    (function(){
+      const form = document.getElementById('contactForm');
+      const msg = document.getElementById('formMsg');
+      const TO = 'you@example.com'; // TODO: burayı kendi e-postanla değiştir
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const name = form.name.value.trim();
+        const email = form.email.value.trim();
+        const message = form.message.value.trim();
+        if (!name || !email || !message){
+          msg.textContent = 'Lütfen tüm alanları doldurun.'; msg.className = 'msg fail'; return;
+        }
+        const subject = encodeURIComponent(`Portfolio Contact • ${name}`);
+        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n--\nSent from portfolio site`);
+        window.location.href = `mailto:${TO}?subject=${subject}&body=${body}`;
+        msg.textContent = 'Mail uygulaması açıldı; göndermeden önce içeriği kontrol edin.'; msg.className = 'msg ok'; form.reset();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -77,8 +77,14 @@
 
     /* === Devlog Modal === */
     .modal-backdrop{
-      position:fixed; inset:0; background:rgba(0,0,0,.54);
-      display:none; align-items:center; justify-content:center; z-index:80;
+      position: fixed;
+      inset: 0;
+  /* accent tonlarıyla degrade arka plan */
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 80;
     }
     .modal{
       width:min(800px, 100% - 32px); border-radius:16px; overflow:hidden;
@@ -425,3 +431,4 @@
   </script>
 </body>
 </html>
+

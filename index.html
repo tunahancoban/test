@@ -79,18 +79,23 @@
     .modal-backdrop{
       position: fixed;
       inset: 0;
-  /* accent tonlarıyla degrade arka plan */
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      background: rgba(0,0,0,0.6); /* %60 opak siyah */
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 80;
     }
+
+
     .modal{
-      width:min(800px, 100% - 32px); border-radius:16px; overflow:hidden;
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow);
+      width: min(800px, 100% - 32px);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--surface); /* opak koyu yüzey */
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
     }
+
     .modal header{
       display:flex; align-items:center; justify-content:space-between;
       padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08);
@@ -99,9 +104,20 @@
     .modal .content{ padding:14px 16px; max-height:70vh; overflow:auto }
     .devlog-entry{ padding:12px 0; border-bottom:1px solid rgba(255,255,255,.08)}
     .devlog-entry:last-child{ border-bottom:none }
-    .devlog-entry h4{ margin:0 0 4px; font-size:16px }
-    .devlog-entry time{ color:var(--muted); font-size:12px }
-    .devlog-entry p{ margin:8px 0 0; color:var(--muted); line-height:1.6 }
+    .devlog-entry h4{
+  margin: 0 0 4px;
+  font-size: 16px;
+  color: var(--accent);
+}
+.devlog-entry time{
+  color: var(--muted);
+  font-size: 12px;
+}
+.devlog-entry p{
+  margin: 8px 0 0;
+  color: var(--text);
+  line-height: 1.6;
+}
     .modal .close{ border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.05);
       border-radius:10px; padding:6px 10px; cursor:pointer; font-weight:600 }
     .modal .links{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap }
@@ -431,4 +447,5 @@
   </script>
 </body>
 </html>
+
 
